@@ -1,0 +1,6 @@
+{
+  "name": "IQ999+ Cricket Flaw Engine",
+  "description": "Dissect cricket teams from A to Z, expose fatal technical flaws, and calculate mathematical match outcomes with pure JSON export.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
