@@ -19,11 +19,47 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
+      - name: Create Mock google-services.json
+        run: |
+          mkdir -p app
+          cat << 'EOF' > app/google-services.json
+          {
+            "project_info": {
+              "project_number": "123456789",
+              "project_id": "iq999-mock-project",
+              "storage_bucket": "iq999-mock.appspot.com"
+            },
+            "client": [
+              {
+                "client_info": {
+                  "mobilesdk_app_id": "1:123456789:android:mockappid",
+                  "android_client_info": {
+                    "package_name": "com.iq999.cricket"
+                  }
+                },
+                "oauth_client": [],
+                "api_key": [
+                  {
+                    "current_key": "fake_api_key"
+                  }
+                ],
+                "services": {}
+              }
+            ],
+            "configuration_version": "1"
+          }
+          EOF
+
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
 
       - name: Build Debug APK
-        run: gradle assembleDebug --stacktrace
+        run: |
+          gradle assembleDebug \
+            -Djava.awt.headless=true \
+            -Dorg.gradle.jvmargs="-Xmx3072m -Djava.awt.headless=true" \
+            --no-daemon \
+            --stacktrace
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
