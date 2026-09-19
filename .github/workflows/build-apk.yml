@@ -19,15 +19,24 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
+      - name: Generate Missing Debug Keystore
+        run: |
+          mkdir -p ~/.android
+          keytool -genkey -v -keystore debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
+          cp debug.keystore ~/.android/debug.keystore || true
+          mkdir -p app
+          cp debug.keystore app/debug.keystore || true
+
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
 
-      - name: Fix KSP and Build APK
+      - name: Build Debug APK
         env:
           GRADLE_OPTS: "-Djava.awt.headless=true -Dkotlin.compiler.execution.strategy=in-process -Dorg.gradle.jvmargs=-Xmx3072m"
         run: |
           gradle assembleDebug \
             -x processDebugGoogleServices \
+            -x validateSigningDebug \
             -Dksp.use.ksp2=false \
             -Djava.awt.headless=true \
             --no-daemon \
