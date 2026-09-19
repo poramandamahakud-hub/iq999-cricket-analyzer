@@ -22,12 +22,14 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
 
-      - name: Build Debug APK (Bypassing Unused Services)
+      - name: Fix KSP and Build APK
+        env:
+          GRADLE_OPTS: "-Djava.awt.headless=true -Dkotlin.compiler.execution.strategy=in-process -Dorg.gradle.jvmargs=-Xmx3072m"
         run: |
           gradle assembleDebug \
             -x processDebugGoogleServices \
+            -Dksp.use.ksp2=false \
             -Djava.awt.headless=true \
-            -Dorg.gradle.jvmargs="-Xmx3072m -Djava.awt.headless=true" \
             --no-daemon \
             --stacktrace
 
